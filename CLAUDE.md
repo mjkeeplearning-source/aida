@@ -845,8 +845,8 @@ Run: `cd backend && uv run pytest`
 | TASK 3 — MCP Bridge Service | ✅ Done | `backend/app/services/__init__.py` + `mcp_bridge.py`; `MCPBridge` class with `connect`/`disconnect`, `tools` property, `call_tool` with 3-attempt exponential backoff retry; launches `@tableau/mcp-server@latest` via `npx -y`; tested locally — 16 tools returned |
 | TASK 4 — Agent Service | ✅ Done | `backend/app/services/agent.py`; `run_agent` async generator; streams `token`/`tool_call`/`done`/`error` SSE events; max 10 iterations guard; model `claude-sonnet-4-6` |
 | TASK 5 — FastAPI Backend: Core & Chat Endpoint | ✅ Done | `backend/app/main.py` (lifespan, health, static mount); `backend/app/routers/chat.py` (`POST /api/chat` SSE); `STATIC_DIR` auto-detects Docker path vs local `frontend/out/`; tested — health returns `mcp_tools: 16`, chat streams `tool_call` + `token` events correctly |
-| TASK 6 — Single Docker Container Build | ⬜ Pending | |
-| TASK 7 — Platform Scripts | ⬜ Pending | |
+| TASK 6 — Single Docker Container Build | ✅ Done | Multi-stage Dockerfile: node:20-slim frontend build + python:3.12-slim runtime with Node.js 20; `@tableau/mcp-server` pre-installed globally; docker-compose.yml with healthcheck |
+| TASK 7 — Platform Scripts | ✅ Done | All 6 scripts (start/stop × mac/linux/windows) fully implemented with .env check, Docker check, docker compose up --build -d |
 | TASK 8 — Next.js Frontend | ✅ Done | `lib/api.ts`, `hooks/useChat.ts`, `components/chat/` (ChatWindow, MessageBubble, ToolCallIndicator, MessageInput), `components/layout/Header.tsx`, `app/page.tsx` (landing), `app/chat/page.tsx`; static build clean; e2e tested — `/` and `/chat/` serve correctly, SSE stream flows `tool_call`→`token`→`done`, 2000-char validation enforced |
 | TASK 9 — Error Handling | ⬜ Pending | |
 | TASK 10 — Testing | ⬜ Pending | |
