@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@tableau/mcp-server": "github:tableau/tableau-mcp"
+  }
+}
