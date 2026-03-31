@@ -8,9 +8,10 @@ import { ToolCallIndicator } from "./ToolCallIndicator";
 interface Props {
   messages: Message[];
   activeToolCall: string | null;
+  onRetry?: () => void;
 }
 
-export function ChatWindow({ messages, activeToolCall }: Props) {
+export function ChatWindow({ messages, activeToolCall, onRetry }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,7 +29,11 @@ export function ChatWindow({ messages, activeToolCall }: Props) {
   return (
     <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
       {messages.map((msg) => (
-        <MessageBubble key={msg.id} message={msg} />
+        <MessageBubble
+          key={msg.id}
+          message={msg}
+          onRetry={msg.error ? onRetry : undefined}
+        />
       ))}
       {activeToolCall && (
         <div className="flex justify-start">

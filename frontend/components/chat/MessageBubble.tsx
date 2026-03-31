@@ -4,9 +4,10 @@ import type { Message } from "@/hooks/useChat";
 
 interface Props {
   message: Message;
+  onRetry?: () => void;
 }
 
-export function MessageBubble({ message }: Props) {
+export function MessageBubble({ message, onRetry }: Props) {
   const isUser = message.role === "user";
 
   return (
@@ -29,6 +30,14 @@ export function MessageBubble({ message }: Props) {
             </ReactMarkdown>
             {message.isStreaming && (
               <span className="inline-block w-1.5 h-4 bg-gray-400 animate-pulse ml-0.5 align-text-bottom rounded-sm" />
+            )}
+            {message.error && onRetry && (
+              <button
+                onClick={onRetry}
+                className="mt-2 text-xs font-medium text-red-600 hover:text-red-800 underline underline-offset-2 block"
+              >
+                Try again
+              </button>
             )}
           </div>
         )}

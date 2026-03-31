@@ -2,7 +2,7 @@ import json
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from ..main import anthropic_client, bridge
 from ..services.agent import run_agent
@@ -12,6 +12,13 @@ router = APIRouter()
 
 class ChatRequest(BaseModel):
     message: str = Field(max_length=2000)
+
+    @field_validator("message")
+    @classmethod
+    def not_blank(cls, v: str) -> str:
+        if not v.strip():
+            raise ValueError("message must not be blank")
+        return v
 
 
 @router.post("/chat")

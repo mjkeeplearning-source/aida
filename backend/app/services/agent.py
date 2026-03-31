@@ -83,6 +83,10 @@ async def run_agent(
                     })
 
             messages.append({"role": "user", "content": tool_results})
+        elif final_message.stop_reason == "max_tokens":
+            yield "event: token\ndata:  *(response truncated — token limit reached)*\n\n"
+            yield "event: done\ndata: {}\n\n"
+            return
         else:
             # Unexpected stop reason — treat as done
             yield "event: done\ndata: {}\n\n"

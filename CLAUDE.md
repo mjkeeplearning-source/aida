@@ -848,8 +848,8 @@ Run: `cd backend && uv run pytest`
 | TASK 6 — Single Docker Container Build | ✅ Done | Multi-stage Dockerfile: node:20-slim frontend build + python:3.12-slim runtime with Node.js 20; `@tableau/mcp-server` pre-installed globally; docker-compose.yml with healthcheck |
 | TASK 7 — Platform Scripts | ✅ Done | All 6 scripts (start/stop × mac/linux/windows) fully implemented with .env check, Docker check, docker compose up --build -d |
 | TASK 8 — Next.js Frontend | ✅ Done | `lib/api.ts`, `hooks/useChat.ts`, `components/chat/` (ChatWindow, MessageBubble, ToolCallIndicator, MessageInput), `components/layout/Header.tsx`, `app/page.tsx` (landing), `app/chat/page.tsx`; static build clean; e2e tested — `/` and `/chat/` serve correctly, SSE stream flows `tool_call`→`token`→`done`, 2000-char validation enforced |
-| TASK 9 — Error Handling | ⬜ Pending | |
-| TASK 10 — Testing | ⬜ Pending | |
+| TASK 9 — Error Handling | ✅ Done | Backend: whitespace validation (422 before stream), max_tokens truncation note; Frontend: "Try again" pre-fills input with last message, 30s tool call timeout warning, error bubbles with retry button |
+| TASK 10 — Testing | ✅ Done | Backend: 15 pytest tests (mcp_bridge, agent, chat router) — all passing; Frontend: 17 Vitest tests (useChat, MessageInput, ToolCallIndicator) — all passing |
 | TASK 11 — README & Documentation | ✅ Done | Full `README.md` with overview, architecture diagram, quick start (Mac/Linux/Windows), env vars table, how-it-works explanation, Tableau PAT setup, troubleshooting table |
 
 ---
