@@ -850,7 +850,7 @@ Run: `cd backend && uv run pytest`
 | TASK 8 — Next.js Frontend | ✅ Done | `lib/api.ts`, `hooks/useChat.ts`, `components/chat/` (ChatWindow, MessageBubble, ToolCallIndicator, MessageInput), `components/layout/Header.tsx`, `app/page.tsx` (landing), `app/chat/page.tsx`; static build clean; e2e tested — `/` and `/chat/` serve correctly, SSE stream flows `tool_call`→`token`→`done`, 2000-char validation enforced |
 | TASK 9 — Error Handling | ⬜ Pending | |
 | TASK 10 — Testing | ⬜ Pending | |
-| TASK 11 — README & Documentation | ⬜ Pending | |
+| TASK 11 — README & Documentation | ✅ Done | Full `README.md` with overview, architecture diagram, quick start (Mac/Linux/Windows), env vars table, how-it-works explanation, Tableau PAT setup, troubleshooting table |
 
 ---
 
