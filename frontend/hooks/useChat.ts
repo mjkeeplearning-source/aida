@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { postChat } from "@/lib/api";
 
 export type MessageRole = "user" | "assistant";
@@ -17,16 +17,30 @@ interface UseChatReturn {
   messages: Message[];
   isStreaming: boolean;
   activeToolCall: string | null;
+  lastSentText: string;
   send: (message: string) => Promise<void>;
 }
+
+const TOOL_CALL_TIMEOUT_MS = 30_000;
 
 export function useChat(): UseChatReturn {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [activeToolCall, setActiveToolCall] = useState<string | null>(null);
+  const [lastSentText, setLastSentText] = useState("");
+  const toolCallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearToolCallTimer = () => {
+    if (toolCallTimerRef.current) {
+      clearTimeout(toolCallTimerRef.current);
+      toolCallTimerRef.current = null;
+    }
+  };
 
   const send = useCallback(async (text: string) => {
     if (isStreaming) return;
+
+    setLastSentText(text);
 
     const userMsg: Message = {
       id: crypto.randomUUID(),
@@ -72,6 +86,7 @@ export function useChat(): UseChatReturn {
             const data = line.slice(6);
 
             if (eventType === "token") {
+              clearToolCallTimer();
               setActiveToolCall(null);
               setMessages((prev) =>
                 prev.map((m) =>
@@ -82,6 +97,22 @@ export function useChat(): UseChatReturn {
               );
             } else if (eventType === "tool_call") {
               setActiveToolCall(data.trim());
+              clearToolCallTimer();
+              toolCallTimerRef.current = setTimeout(() => {
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === assistantId
+                      ? {
+                          ...m,
+                          content:
+                            m.content +
+                            "\n\n*(This is taking longer than expected…)*",
+                        }
+                      : m
+                  )
+                );
+                setActiveToolCall(null);
+              }, TOOL_CALL_TIMEOUT_MS);
             } else if (eventType === "done") {
               setMessages((prev) =>
                 prev.map((m) =>
@@ -118,6 +149,7 @@ export function useChat(): UseChatReturn {
         )
       );
     } finally {
+      clearToolCallTimer();
       setIsStreaming(false);
       setActiveToolCall(null);
       setMessages((prev) =>
@@ -128,5 +160,5 @@ export function useChat(): UseChatReturn {
     }
   }, [isStreaming]);
 
-  return { messages, isStreaming, activeToolCall, send };
+  return { messages, isStreaming, activeToolCall, lastSentText, send };
 }

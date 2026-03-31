@@ -8,9 +8,11 @@ const MAX_LENGTH = 2000;
 interface Props {
   onSend: (message: string) => void;
   disabled: boolean;
+  prefill?: string;
+  onPrefillConsumed?: () => void;
 }
 
-export function MessageInput({ onSend, disabled }: Props) {
+export function MessageInput({ onSend, disabled, prefill, onPrefillConsumed }: Props) {
   const [text, setText] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -20,6 +22,14 @@ export function MessageInput({ onSend, disabled }: Props) {
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
   }, [text]);
+
+  useEffect(() => {
+    if (prefill) {
+      setText(prefill.slice(0, MAX_LENGTH));
+      textareaRef.current?.focus();
+      onPrefillConsumed?.();
+    }
+  }, [prefill]);
 
   const submit = () => {
     const trimmed = text.trim();
